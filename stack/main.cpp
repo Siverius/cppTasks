@@ -13,21 +13,32 @@ struct Elem {
 class Stack
 {
     //pointer to last struct
-    Elem * top;
-public:
-    //Stack();
-    //~Stack();
+    Elem * top = NULL;
+    int counter = 0;
+public:    
+    ~Stack()
+    {
+        delete top;
+    }
+    
     void push(int val)
     {
         Elem * temp = this->top;
         top = new Elem(val, temp);
+        counter++;
     }
+    
     int pop()
     {
+        if (counter == 0)
+        {
+            return 0;
+        }
         int out = top->num;
         Elem * temp = top;
         top = top->prev;
         delete temp;
+        counter--;
         return out;
     }
 };
@@ -41,5 +52,9 @@ int main()
     std::cout << obj.pop() << std::endl;    //3
     std::cout << obj.pop() << std::endl;    //2
     std::cout << obj.pop() << std::endl;     //1
+    std::cout << obj.pop() << std::endl;     //0
+    std::cout << obj.pop() << std::endl;     //0
+    std::cout << obj.pop() << std::endl;     //0
+    std::cout << obj.pop() << std::endl;     //0
     return 0;
 }
