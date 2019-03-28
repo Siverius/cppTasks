@@ -15,10 +15,13 @@ class Stack
     //pointer to last struct
     Elem * top = NULL;
     int counter = 0;
-public:    
+public:
+    Stack() {
+        top = NULL;
+    }
     ~Stack()
     {
-        delete top;
+        while(top) pop();
     }
     
     void push(int val)
@@ -30,9 +33,9 @@ public:
     
     int pop()
     {
-        if (counter == 0)
+        if (!top)
         {
-            return 0;
+            return -1;
         }
         int out = top->num;
         Elem * temp = top;
