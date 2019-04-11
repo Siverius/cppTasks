@@ -71,6 +71,11 @@ public:
         this->fileStreamClose();
     }
 };
+
+
+
+
+
 class BookModel : public FileModel
 {
     
@@ -88,6 +93,7 @@ public:
     
     BookModel () {
         this->setSource();
+        
         attr.insert(std::pair<std::string,std::string>("name", "string"));
         attr.insert(std::pair<std::string,std::string>("author", "string"));
         attr.insert(std::pair<std::string,std::string>("whereis", "int")); //0 - lib, 1 - reader
@@ -99,6 +105,16 @@ public:
         data.insert(std::pair<std::string,std::string>("status", BookModel::STATUS_ACTIVE)); //0 - deleted, 1 - active
     }
 };
+
+
+
+
+
+
+
+
+
+
 /*
 class ReaderModel : public FileModel
 {
@@ -116,6 +132,14 @@ public:
     }
 };
 * */
+
+
+
+
+
+
+
+
 int main()
 {
     BookModel fm;
