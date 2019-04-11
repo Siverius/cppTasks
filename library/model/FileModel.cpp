@@ -43,12 +43,12 @@ class FileStructor
                 it!=map_tmpl->end(); \
                 ++it)
             {
-                map_tmpl.at(*(map_tmpl->first)) = v_tmp[i];
+                map_tmpl->at(it->first) = v_tmp[i];
                 ++i;
             }
         }
         
-        
+        /*
         std::string datafile;
         int id;
         
@@ -61,7 +61,7 @@ class FileStructor
             {
                 s >> id;
                 return id;
-            }
+            }*/
             //найти строку с названием файла, куда пишем
             //взять id, переписать его на инкрементированный
         }
@@ -72,7 +72,7 @@ class FileStructor
         //добавить map в вектор
         
         //вернуть вектор
-    }
+    
     ~FileStructor()
     {
         //закрыть файл если открыт
@@ -145,7 +145,7 @@ class FileModel : public BaseModel
         
         std::string row;
         std::string datafile;
-        int id;
+        /*int id;
         
         while(getline(hlp, row)) {
             istringstream s(row);
@@ -159,7 +159,7 @@ class FileModel : public BaseModel
             }
             //найти строку с названием файла, куда пишем
             //взять id, переписать его на инкрементированный
-        }
+        }*/
         //закрыть helper
         //вернуть id
         return 0;
