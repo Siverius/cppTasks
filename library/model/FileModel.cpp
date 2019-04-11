@@ -1,42 +1,127 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <map>
-#include <fstream>
+#include <vector>
+
+class FileStructor
+{
+    std::fstream file;
+    std::map<std::string, std::string> * tmpl;
+    const char DELIMITER = ';';
+    
+    FileStructor() = delete;
+    FileStructor(std::string filename, std::map<std::string, std::string> * tmpl)
+    {
+        //открыть файл
+        this->file.open(filename, std::ios::in);
+        if(!this->file)
+        {
+            std::cout << "Wrong file: " << filename << std::endl;
+        }
+        this->tmpl = tmpl;
+    }
+    
+    void execute()
+    {
+        std::string tuple; // - считанная из файла строка
+        
+        while(getline(this->file, tuple))
+        {
+            std::istringstream iss(tuple);
+            auto map_tmpl = this->tmpl;
+            std::vector<std::string> v_tmp;
+            for(std::string piece; std::getline(iss, piece, FileStructor::DELIMITER); )
+            {
+                v_tmp.push_back(piece);
+                //создадим вектор
+                //затем в цикле переберём мап. передадим в секонд значения из вектора
+            }
+            int i = 0;
+            for(std::map<std::string, std::string>::iterator it = map_tmpl->begin(); \
+                it!=map_tmpl->end(); \
+                ++it)
+            {
+                map_tmpl.at(*(map_tmpl->first)) = v_tmp[i];
+                ++i;
+            }
+        }
+        
+        
+        std::string datafile;
+        int id;
+        
+        while(getline(hlp, row)) {
+            istringstream s(row);
+            std::string temp_name;
+            int id;
+            s >> temp_name;
+            if (temp_name == this->filename)
+            {
+                s >> id;
+                return id;
+            }
+            //найти строку с названием файла, куда пишем
+            //взять id, переписать его на инкрементированный
+        }
+        //прочитать строку
+        //разобрать по delimiter
+        //создать map из ntmplate
+        //заполнить map
+        //добавить map в вектор
+        
+        //вернуть вектор
+    }
+    ~FileStructor()
+    {
+        //закрыть файл если открыт
+    }
+};
 
 class BaseModel
 {
 public:
-    std::map<std::string, std::string> attr; //file structure
-    std::map<std::string, std::string> data; //one row (tuple) data //{attr_name: attr_type}
-    void validation(); // проверка на корректность
-    void save(); //сохранение
+    std::map<std::string, std::string> data;
+    void save();
 };
 
 class FileModel : public BaseModel
 {
-    const char GLUE = ';';
+    const char GLUE = ' '; //don`t change it or Baba Yaga will come to you
+    const std::string _data_dir = "../db/";
+    const std::string _data_ext = ".txt";
+    const std::string _helper = ".helper";
+    std::string _data_row;
     std::fstream _data_file;
+    std::fstream _helper_file;
     
-    void _openFile(std::string filename)
+    void _openFile()
     {
-        this->_data_file.open(filename, std::ios::app);
-
-        if(!this->_data_file) 
+        std::string fn = this->_data_dir + \
+                         this->filename + \
+                         this->_data_ext;
+                         
+        this->_data_file.open(fn, std::ios::app);
+     
+        if(!(this->_data_file)) 
         {
-           std::cout << "Can`t open file " << filename << std::endl;
-           exit(-1);
+            this->_closeFile();
+            std::cout << "Can`t open file " << fn << std::endl;
+            exit(-1);
         }
     }
     
     void _makeRow()
     {
+        std::string temp = "";
         for(auto piece : this->data)
-        {
-            auto end = FileModel::GLUE;
-            this->dataRow += piece.second + end;
+        { 
+            temp += piece.second + FileModel::GLUE;
         }
+        this->_data_row = temp;
     }
-    
+
     void _closeFile()
     {
         if(this->_data_file.is_open())
@@ -44,14 +129,49 @@ class FileModel : public BaseModel
             this->_data_file.close();
         }
     }
+    
+    int _getNewId()
+    {
+        //открыть файл helper
+        std::string hlp = this->_data_dir + \
+                          this->_helper;
+        this->_helper_file.open(hlp, std::ios::ate);
+        
+        if(!this->_helper_file)
+        {
+            std::cout << "Can`t oper helper file" << std::endl;
+            exit(-1);
+        }
+        
+        std::string row;
+        std::string datafile;
+        int id;
+        
+        while(getline(hlp, row)) {
+            istringstream s(row);
+            std::string temp_name;
+            int id;
+            s >> temp_name;
+            if (temp_name == this->filename)
+            {
+                s >> id;
+                return id;
+            }
+            //найти строку с названием файла, куда пишем
+            //взять id, переписать его на инкрементированный
+        }
+        //закрыть helper
+        //вернуть id
+        return 0;
+    }
+    
 public:
-    std::string file; //relative path to file
-    std::string dataRow = ""; //will be inserted in db-file
-    std::fstream fileStream; 
+    std::string filename;
+    std::fstream fileStream;
     
     auto fileStreamOpen()
     {
-        return this->_openFile(this->file);
+        return this->_openFile();
     }
     
     auto fileStreamClose()
@@ -62,72 +182,73 @@ public:
     void save()
     {
         this->fileStreamOpen();
-        
         this->_makeRow();
-        
-        this->_data_file << this->dataRow;
+        this->_data_file << this->_data_row;
+        this->_data_file << this->_getNewId();
         this->_data_file << std::endl;
         
-        this->fileStreamClose();
+        this->fileStreamClose();        
     }
 };
 class BookModel : public FileModel
 {
-    
-public:
     const std::string WHEREIS_LIB = "lib";
     const std::string WHEREIS_RDR = "rdr";
-    
-    const std::string STATUS_DEL = "del";
-    const std::string STATUS_ACTIVE = "act";
-    
-    void setSource()
+
+    void _setSource()
     {
-        this->file = "../db/books.txt";
+        this->filename = "books";
     }
-    
+
+public:
     BookModel () {
-        this->setSource();
-        attr.insert(std::pair<std::string,std::string>("name", "string"));
-        attr.insert(std::pair<std::string,std::string>("author", "string"));
-        attr.insert(std::pair<std::string,std::string>("whereis", "int")); //0 - lib, 1 - reader
-        attr.insert(std::pair<std::string,std::string>("status", "int")); //0 - deleted, 1 - active
-        
-        data.insert(std::pair<std::string,std::string>("name", "string"));
-        data.insert(std::pair<std::string,std::string>("author", "string"));
-        data.insert(std::pair<std::string,std::string>("whereis", BookModel::WHEREIS_LIB)); //0 - lib, 1 - reader
-        data.insert(std::pair<std::string,std::string>("status", BookModel::STATUS_ACTIVE)); //0 - deleted, 1 - active
+        this->_setSource();
+        this->data = {
+                {"name", ""},
+                {"author", ""},
+                {"whereis", WHEREIS_LIB}, //default values
+           };
     }
-};
-/*
-class ReaderModel : public FileModel
-{
-public:    
-    const int STATUS_DEL = 0;
-    const int STATUS_ACTIVE = 1;
     
-    void setSource()
+    void setName(std::string name)
     {
-        this->file = "../db/readers.txt";
+        this->data.at("name") = name;
     }
-    ReaderModel () {
-        attr.insert(std::pair<std::string,std::string>("name", "string"));
-        attr.insert(std::pair<std::string,std::string>("status", "int")); //0 - deleted, 1 - active
+    
+    void setAuthor(std::string author)
+    {
+        this->data.at("author") = author;
+    }
+    
+    void changeWhereis()
+    {
+        this->data.at("whereis") = (this->data["whereis"] == BookModel::WHEREIS_LIB) ? \
+            BookModel::WHEREIS_RDR : \
+            BookModel::WHEREIS_LIB;
     }
 };
-* */
 int main()
 {
+    //books
+        //insert book
+        //find book
+        //findAll books
+    //readers
+        //insert reader
+        //find reader
+        //findAll readers
+    //work
+        //find reader
+            //find another reader
+            //give him book
+                //find book
+            //show books he take
+                //take back book
+    
     BookModel fm;
-    //fm.whereis{5};
+    fm.setName("test_name");
+    fm.setAuthor("test_author_");
     fm.save();
-    
-    std::cout << "---------------------------------------" << std::endl;
-    
-    //ReaderModel reader;
-    //reader.save();
-    
-    std::cout << "---------------------------------------" << std::endl;
     
     return 0;
 }
