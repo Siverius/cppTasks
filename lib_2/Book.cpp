@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <algorithm>
  
 class Book 
 {
@@ -11,17 +13,17 @@ public:
     std::string name;
     std::string author;
     int status = 0; //0 - lib, 1 - reader
-    Reader(std::string n, std::string a, int s): name(n), author(a), status(s) { }
-    Reader(){ }
+    Book(std::string n, std::string a, int s): name(n), author(a), status(s) { }
+    Book(){ }
 };
 
 std::ostream& operator << (std::ostream &os, const Book &b)
 {
-    return os /*<< r._id*/ << r.name << " " << r.author << r.status;
+    return os << b.name << " " << b.author << b.status;
 }
 std::istream& operator >> (std::istream& in, Book& b)
 {
-    in /*>> r._id*/ >> r.name >> r.age >> r.status;
+    in >> b.name >> b.author >> b.status;
     return in;
 }
 
@@ -75,16 +77,22 @@ int main()
     return 0;
 }
 
-void fillBooks(std::vector<Reader> * book)
+void fillBooks(std::vector<Book> * book)
 {
-    std::cout << "\t Insert name (string): ";
+    std::cout << "\t Insert name of book(string): ";
     std::string t_name;
     std::cin >> t_name;
-    std::cout << "\t Insert age (int): ";
-    int t_age;
-    std::cin >> t_age;
-    Book r(t_name, t_age);
-    book->push_back(r);
+    
+    std::cout << "\t Insert author (string): ";
+    std::string t_author;
+    std::cin >> t_author;
+    
+    std::cout << "\t Insert status (int, default 0): ";
+    int t_status;
+    std::cin >> t_status;
+    
+    Book b(t_name, t_author, t_status);
+    book->push_back(b);
 }
 
 void saveBooks(std::vector<Book> * book)
@@ -109,10 +117,11 @@ std::vector<Book> getBooksVector()
     if (in.is_open())
     {
         std::string name;
-        int age;
-        while (in >> name >> age)
+        std::string author;
+        int status;
+        while (in >> name >> author >> status)
         {
-            rv.push_back(Book(name, age));
+            rv.push_back(Book(name, author, status));
         }
     }
     in.close();
@@ -120,6 +129,27 @@ std::vector<Book> getBooksVector()
     return rv;
 }
 
+std::vector<Book> findBookByName(std::string book_name, int status = 0)
+{
+    std::vector<Book> allBooks = getBooksVector();
+    std::vector<Book> foundedBooks;
+    if(!allBooks.empty()){
+        
+        auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [book_name](Book & book)->bool{
+                return book.name.find(book_name)!=std::string::npos;
+            });
+        
+        foundedBooks.push_back(*fnd);
+    }
+    return foundedBooks;
+}
+
+std::vector<Book> findBookByAuthor(std::string author, int status = 0)
+{
+    std::vector<Book> allBooks = getBooksVector();
+    return allBooks;
+}
+/*
 template <typename T> 
 T getDataVector() 
 {
@@ -138,7 +168,7 @@ T getDataVector()
     
     
 }
-
+*/
 
 
 
@@ -164,9 +194,9 @@ T getDataVector()
 
 void test()
 {
-    for (int i = 0; i < getReadersVector().size(); i++)
+    for (int i = 0; i < getBooksVector().size(); i++)
     {
-        std::cout << getReadersVector()[i].name << " - " << getReadersVector()[i].age << std::endl;
+        std::cout << getBooksVector()[i].name << " - " << getBooksVector()[i].author << std::endl;
     }
 }
 
