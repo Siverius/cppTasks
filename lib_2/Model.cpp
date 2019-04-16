@@ -26,15 +26,19 @@ public:
         fullName = dataDirectory + fileName + ext;
     }
     
-    void openFile()
+    void openFileToWrite()
     {
-        std::cout << " << " << fullName << " >> " << std::endl;
-        std::fstream fs(fullName, std::ios::in | std::ios::out | std::ios::ate);
+        std::ofstream fs(fullName, std::ios::in);
         if(!fs.is_open())
         {
             std::cout << "We have problems with the service file opening" << std::endl;
             return;
         }
+    }
+    
+    void openFileToRead()
+    {
+        
     }
     
     void closeFile()
@@ -69,7 +73,7 @@ public:
 int main()
 {
     Model model;
-    model.openFile();
+    model.openFileToRead();
     
     model.setData();
     std::cout << model.fullName << std::endl;
