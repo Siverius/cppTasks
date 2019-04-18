@@ -1,11 +1,3 @@
-
-#include <string>
-#include <fstream>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-#include "AI.cpp"
-
 class Book 
 {
     const int STATUS_LIB = 0;
@@ -28,6 +20,7 @@ public:
     void insert();
     bool save();  //  
     std::vector<Book> find(std::string text, int field, int whereis = 0);
+    std::vector<Book> findById(int f_id, int whereis = 0);
     std::vector<Book> findAll(int whereis = 0);
     void update();
     void del();
@@ -59,12 +52,31 @@ bool Book::save()
     std::ofstream infile(fn,std::ios::app);
     
     //write data
-    infile << id << " " << name << " " << author << " " << status;
+    infile << id << " " << name << " " << author << " " << status << std::endl;
     
     //close file
     infile.close();
     
     return true;
+}
+
+std::vector<Book> Book::findById(int f_id, int status)
+{
+    std::vector<Book> allBooks = Book::findAll();
+    std::vector<Book> foundedBooks;
+    
+    if(!allBooks.empty())
+    {
+        auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [f_id](Book & book)->bool{
+                //return book.id.find(f_id)!=std::string::npos;
+                return book.id == f_id;
+            });
+        if(fnd != allBooks.end())
+        {
+            foundedBooks.push_back(*fnd);
+        }
+    }
+    return foundedBooks;
 }
 
 //1704
@@ -79,15 +91,27 @@ std::vector<Book> Book::find(std::string text, int field, int status)
             auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [text](Book & book)->bool{
                     return book.name.find(text)!=std::string::npos;
                 });
-            foundedBooks.push_back(*fnd);
+            if(fnd != allBooks.end())
+            {
+                foundedBooks.push_back(*fnd);
+            }
         }
         else if(field == 2) 
         {
             auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [text](Book & book)->bool{
                     return book.author.find(text)!=std::string::npos;
                 });
-            foundedBooks.push_back(*fnd);
+            if(fnd != allBooks.end())
+            {
+                foundedBooks.push_back(*fnd);
+            }
         }
+    }
+    
+    if(foundedBooks.size() == 0)
+    {
+        Book emptyBook;
+        foundedBooks.push_back(emptyBook);
     }
     
     return foundedBooks;
@@ -120,6 +144,7 @@ void BookMenu()
     {
         std::cout << "Select something:" << std::endl;
         std::cout << "1. Add book" << std::endl;
+        std::cout << "2. Hello" << std::endl;
         std::cout << "3. Find book by name" << std::endl;
         std::cout << "4. Find book by author" << std::endl;
         std::cout << "0. Exit " << std::endl;
@@ -148,8 +173,7 @@ void BookMenu()
                 std::vector<Book>::iterator it = bks.begin();
                 while(it != bks.end())
                 {
-                std::cout << "iteration" << std::endl;
-                    std::cout << it->name << " " << it->author << std::endl;
+                    std::cout << it->id << " " << it->name << " " << it->author << std::endl;
                     ++it;
                 }
             }
@@ -164,7 +188,19 @@ void BookMenu()
                 std::vector<Book>::iterator it = bks.begin();
                 while(it != bks.end())
                 {
-                    std::cout << it->name << " " << it->author << std::endl;
+                    std::cout << it->id << " " << it->name << " " << it->author << std::endl;
+                    ++it;
+                }
+            }
+                break;
+            case 5:
+            {
+                Book b;
+                std::vector<Book> bks = b.findAll();
+                std::vector<Book>::iterator it = bks.begin();
+                while(it != bks.end())
+                {
+                    std::cout << it->id << " " << it->name << " " << it->author << std::endl;
                     ++it;
                 }
             }

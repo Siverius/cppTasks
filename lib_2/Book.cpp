@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include "AI.cpp"
 #include "_Reader.cpp"
 #include "_Book.cpp"
  
@@ -18,7 +19,7 @@ int main()
         std::cout << "2. Readers " << std::endl;
         std::cout << "3. Issue some books " << std::endl;
         std::cout << "4. Pick up some book(a) " << std::endl;
-        std::cout << "0. Drop inserted data and exit " << std::endl;
+        std::cout << "0. Exit " << std::endl;
         
         std::cin >> choice;
         switch(choice)
