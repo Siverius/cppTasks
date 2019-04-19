@@ -23,7 +23,6 @@ public:
     void del();
 };
 
-//1704
 void Reader::insert()
 {
     std::cout << "\t Insert name of reader(string): ";
@@ -38,7 +37,6 @@ void Reader::insert()
     reader.save();
 }
 
-//1704
 bool Reader::save()
 {
     //get id
@@ -75,7 +73,7 @@ std::vector<Reader> Reader::findById(int f_id, int status)
     return foundedReaders;
 }
 
-//1704 ToDo: redo using template
+//ToDo: redo using template
 std::vector<Reader> Reader::find(std::string text, int field, int status)
 {
     std::vector<Reader> allReaders = Reader::findAll();
