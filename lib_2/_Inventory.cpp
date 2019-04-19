@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include "_Reader.cpp"
+#include "AI.cpp"
 
 class Inventory
 {
@@ -17,8 +18,8 @@ public:
     int book_id;
     int delivered = 0;
     
-    Reader(int r, int b): reader_id(r), book_id(b) { }
-    Reader(){}
+    Inventory(int r, int b): reader_id(r), book_id(b) { }
+    Inventory(){}
 
     void insert();
     bool save();  
@@ -40,21 +41,17 @@ void Inventory::insert()
     int t_age;
     std::cin >> t_age;
     
-    Inventory inventory(t_name, t_age);
-    reader.save();
+    Inventory inventory(reader_id, book_id);
+    inventory.save();
 }
 
 bool Inventory::save()
-{
-    //get id
-    AI ai(filename);
-    id = ai.get_id();
-    
+{    
     //open file for std::ios::app
     std::ofstream infile(fn,std::ios::app);
     
     //write data
-    infile << id << " " << name << " " << age << std::endl;
+    infile << " " << reader_id << " " << book_id << std::endl;
     
     //close file
     infile.close();
