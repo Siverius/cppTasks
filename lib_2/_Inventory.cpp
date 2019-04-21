@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "_Reader.cpp"
 #include "AI.cpp"
+#include "_Reader.cpp"
 
 class Inventory
 {
@@ -67,15 +67,22 @@ std::vector<Inventory> Inventory::find(int value, int field)
 
     if(!allRecords.empty())
     {
-        if(field == 1) {
-            auto fnd = std::find_if(allRecords.begin(), allRecords.end(), [value](Inventory & inventory)->bool{
+        std::vector<Inventory>::iterator fnd;
+        if(field == 1)
+        {
+            fnd = std::find_if(allRecords.begin(), allRecords.end(), [value](Inventory & inventory)->bool{
                     return inventory.reader_id == value;
                 });
         }
-        if(field == 2) {
-            auto fnd = std::find_if(allRecords.begin(), allRecords.end(), [value](Inventory & inventory)->bool{
+        else if(field == 2)
+        {
+            fnd = std::find_if(allRecords.begin(), allRecords.end(), [value](Inventory & inventory)->bool{
                     return inventory.book_id == value;
                 });
+        }
+        else
+        {
+            fnd = allRecords.end();
         }
         if(fnd != allRecords.end())
         {
@@ -131,9 +138,16 @@ void InventoryMenu()
             case 1:
             {
                 std::string r_name;
-                std::cout << "Inser reader name" << std::endl;
+                std::cout << "Insert reader name" << std::endl;
                 std::cin >> r_name;
-                std::vector<Reader> rdr.find(r_name);
+                Reader r;
+                std::vector<Reader> rdr = r.find(r_name, 1); //<-
+                std::vector<Reader>::iterator it = rdr.begin();
+                while(it != rdr.end())
+                {
+                    std::cout << it->id << " " << it->name << " " << it->age << std::endl;
+                    ++it;
+                }
                 //find reader
                 //take his id
                 
