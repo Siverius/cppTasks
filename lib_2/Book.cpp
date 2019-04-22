@@ -6,7 +6,7 @@
 #include "AI.cpp"
 #include "_Reader.cpp"
 #include "_Book.cpp"
- 
+#include "_Inventory.cpp"
 
 int main()
 {    
@@ -18,7 +18,7 @@ int main()
         std::cout << "1. Books " << std::endl;
         std::cout << "2. Readers " << std::endl;
         std::cout << "3. Issue some books " << std::endl;
-        std::cout << "4. Pick up some book(a) " << std::endl;
+        std::cout << "4. Pick up some book " << std::endl;
         std::cout << "0. Exit " << std::endl;
         
         std::cin >> choice;
@@ -29,6 +29,10 @@ int main()
                 break;
             case 2:
                 ReaderMenu();
+                break;
+                break;
+            case 3:
+                InventoryMenu();
                 break;
             default:
                 ever = 0;

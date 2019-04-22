@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -5,6 +6,8 @@
 #include <algorithm>
 #include "AI.cpp"
 #include "_Reader.cpp"
+* 
+*/
 
 class Inventory
 {
@@ -117,7 +120,6 @@ std::vector<Inventory> Inventory::findAll(int whereis)
     return allRecords;
 }
 
-//controller?
 void InventoryMenu()
 {
     int ever = 1;
@@ -140,14 +142,31 @@ void InventoryMenu()
                 std::string r_name;
                 std::cout << "Insert reader name" << std::endl;
                 std::cin >> r_name;
-                Reader r;
-                std::vector<Reader> rdr = r.find(r_name, 1); //<-
-                std::vector<Reader>::iterator it = rdr.begin();
-                while(it != rdr.end())
+                try
                 {
-                    std::cout << it->id << " " << it->name << " " << it->age << std::endl;
-                    ++it;
-                }
+                    Reader r;
+                    std::vector<Reader> rdr = r.find(r_name, 1);
+                    std::vector<Reader>::iterator r_it = rdr.begin();
+                    while(r_it != rdr.end())
+                    {
+                        std::cout << r_it->id << " " << r_it->name << " " << r_it->age << std::endl;
+                        ++r_it;
+                    }
+                    std::cout << "Insert Readers ID or type 0 to go back" << std::endl;
+                    int rdr_id;
+                    std::cin >> rdr_id;
+                    
+                    if(rdr_id == 0)
+                    {
+                        choice = 0;
+                    }
+                    
+                    //make books vector
+                    //InventoryActions ia;
+                    //ia.makeBooksVector();
+                    
+                    
+                    
                 //find reader
                 //take his id
                 
@@ -156,6 +175,11 @@ void InventoryMenu()
                 //set it into vector
                 //create row in table inventory
                 //change book status
+                } 
+                catch (int i)
+                {
+                    std::cout << "No readers has been founded" << std::endl;
+                }
             }
                 break;
             case 2:

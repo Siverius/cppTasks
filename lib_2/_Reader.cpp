@@ -20,6 +20,7 @@ public:
     std::vector<Reader> findById(int f_id, int whereis = 0);
     std::vector<Reader> findAll(int whereis = 0);
     void update();
+    std::vector<Book> Reader::Has_Many(Book book);
     void del();
 };
 
@@ -81,7 +82,7 @@ std::vector<Reader> Reader::find(std::string text, int field, int status)
 
     if(!allReaders.empty())
     {
-        auto fnd = std::find_if(allReaders.begin(), allReaders.end(), [text](Reader & reader)->bool{
+        std::vector<Reader>::iterator fnd = std::find_if(allReaders.begin(), allReaders.end(), [text](Reader & reader)->bool{
                 return reader.name.find(text)!=std::string::npos;});
         if(fnd != allReaders.end())
         {
@@ -89,12 +90,8 @@ std::vector<Reader> Reader::find(std::string text, int field, int status)
         }
     }
     
-    if(foundedReaders.size() == 0)
-    {
-        Reader emptyReader;
-        foundedReaders.push_back(emptyReader);
-    }
-    
+    if(foundedReaders.size() == 0) throw -1;
+        
     return foundedReaders;
 }
 
@@ -114,6 +111,28 @@ std::vector<Reader> Reader::findAll(int whereis)
     file.close(); 
     
     return rv;
+}
+
+std::vector<Inventory> Reader::Has_Many(Inventory inv)
+{
+    inv.findAll();
+    if(inv.size() == 0) throw -1;
+    std::vector<Inventory>::iterator it = inv.begin();
+    std::vector<Inventory> result;
+    
+    while(it != inv.end())
+    {
+        std::vector<Inventory>::iterator fnd = std::find_if(inv.begin(), inv.end(), [id](Inventory & inv)->bool{
+            return id == inv.reader_id;
+            });
+        if(fnd ! = inv.end())
+        {
+            result.push_back(*fnd);
+        }
+        ++it;
+    }
+    
+    return result;
 }
 
 void ReaderMenu()
@@ -149,13 +168,20 @@ void ReaderMenu()
                 std::string piece;
                 std::cout << "Insert Reader name" << std::endl;
                 std::cin >> piece;
-                Reader r;
-                std::vector<Reader> rdr = r.find(piece, 1); //<-
-                std::vector<Reader>::iterator it = rdr.begin();
-                while(it != rdr.end())
+                try
                 {
-                    std::cout << it->id << " " << it->name << " " << it->age << std::endl;
-                    ++it;
+                    Reader r;
+                    std::vector<Reader> rdr = r.find(piece, 1);
+                    std::vector<Reader>::iterator it = rdr.begin();
+                    while(it != rdr.end())
+                    {
+                        std::cout << it->id << " " << it->name << " " << it->age << std::endl;
+                        ++it;
+                    }
+                } 
+                catch (int i)
+                {
+                    std::cout << "No readers has been founded" << std::endl;
                 }
             }
                 break;
