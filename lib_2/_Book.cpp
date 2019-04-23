@@ -28,6 +28,7 @@ public:
     std::vector<Book> findAll(int whereis = LIBRARY);
     void update();
     void del(int id);
+    int anotherStatus();
 };
 
 void Book::insert()
@@ -144,15 +145,61 @@ std::vector<Book> Book::findAll(int whereis)
     return rv;
 }
 
-void Book::update()
+int anotherStatus()
 {
+    return status == LIBRARY ? READER : LIBRARY;
+}
+
+void Book::update(int id, int status)
+{
+    //findAll
+    //find iterator to our object (id)
+    //change status
+    //rewrita file
+    
+    std::vector<Book> all = findAll();
+    str::vector<Book>::iterator temp = std::find_if(all.begin(), all.end(), \
+        [id](Book & book)->bool{
+                return book.id == id;
+            }
+    );
+    if(temp != all.end())
+    {    
+        str::vector<Book>::iterator to_upd = temp;
+        all.erase(temp);
+        
+        //rewrite file 
+        std::ofstream input(getFilename());
+        if(input.is_open())
+        {
+            std::copy(all.begin(), all.end(), std::ostream_iterator<std::string>(input, "\n"));
+            input << to_upd->id << to_upd->name << to_upd->author << to_upd->anotherStatus() << std::endl;        }
+        
+        
+    }
+    
     return;
 }
 
 void Book::del(int id)
 {
-    //here we will find row and delete it
-    //we need findById
+    std::vector<Book> all = findAll();
+    str::vector<Book>::iterator to_del = std::find_if(all.begin(), all.end(), \
+        [id](Book & book)->bool{
+                return book.id == id;
+            }
+    );
+    if(to_del != all.end())
+    {
+        all.erase(to_del);
+    }
+    
+    //rewrite file 
+    std::ofstream input(getFilename());
+    if(input.is_open())
+    {
+        std::copy(all.begin(), all.end(), std::ostream_iterator<std::string>(input, "\n"));
+    }
     return;
 }
 
