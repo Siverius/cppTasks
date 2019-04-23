@@ -1,12 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include "base/BaseModel.cpp"
-#include "_Book.cpp"
-#include "_Reader.cpp"
-#include "_Inventory.cpp"
+#include "library.h"
 
 int main()
 {    

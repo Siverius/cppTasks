@@ -1,7 +1,3 @@
-#include <string>
-#include <algorithm>
-//#include "base/BaseModel.cpp"
-
 class Book : public BaseModel
 {
 public:
@@ -20,15 +16,14 @@ public:
     Book() : BaseModel(filename) { }
 
     void insert();
-    void save();  //  
-    std::vector<Book> find(std::string text, int field, int whereis = 0);
-    std::vector<Book> findById(int f_id, int whereis = 0);
-    std::vector<Book> findAll(int whereis = 0);
+    void save();
+    std::vector<Book> find(std::string text, int field, int whereis = LIBRARY);
+    std::vector<Book> findById(int f_id, int whereis = LIBRARY);
+    std::vector<Book> findAll(int whereis = LIBRARY);
     void update();
     void del();
 };
 
-//1704
 void Book::insert()
 {
     std::cout << "\t Insert name of book(string): ";
@@ -43,12 +38,11 @@ void Book::insert()
     book.save();
 }
 
-//1704
 void Book::save()
 {
-    //get id
-    AI ai(filename);
-    id = ai.get_id();
+    //set id
+    setAutoincrement();
+    id = autoincrement;
     
     //open file for std::ios::app
     std::ofstream infile(getFilepath(),std::ios::app);
@@ -71,7 +65,7 @@ std::vector<Book> Book::findById(int f_id, int status)
     {
         auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [f_id](Book & book)->bool{
                 //return book.id.find(f_id)!=std::string::npos;
-                return book.id == f_id;
+                return (book.id == f_id && book.status == LIBRARY);
             });
         if(fnd != allBooks.end())
         {
@@ -91,7 +85,7 @@ std::vector<Book> Book::find(std::string text, int field, int status)
     {    
         if(field == 1) {
             auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [text](Book & book)->bool{
-                    return book.name.find(text)!=std::string::npos;
+                    return (book.name.find(text)!=std::string::npos && book.status == LIBRARY);
                 });
             if(fnd != allBooks.end())
             {
@@ -101,7 +95,7 @@ std::vector<Book> Book::find(std::string text, int field, int status)
         else if(field == 2) 
         {
             auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [text](Book & book)->bool{
-                    return book.author.find(text)!=std::string::npos;
+                    return (book.author.find(text)!=std::string::npos && book.status == LIBRARY);
                 });
             if(fnd != allBooks.end())
             {
@@ -129,7 +123,9 @@ std::vector<Book> Book::findAll(int whereis)
         {
             Book book;
             file >> book.id >> book.name >> book.author >> book.status;
-            rv.push_back(book);
+            if(book.status == whereis) {
+                rv.push_back(book);
+            }
         }
     }
     file.close(); 

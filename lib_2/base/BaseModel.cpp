@@ -1,8 +1,3 @@
-#include <string>
-#include <vector>
-#include "../AI.cpp"
-
-
 class BaseModel
 {
 public:
