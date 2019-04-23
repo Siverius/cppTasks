@@ -20,7 +20,7 @@ public:
     std::vector<Reader> findById(int f_id, int whereis = 0);
     std::vector<Reader> findAll(int whereis = 0);
     void update();
-    std::vector<Book> Reader::Has_Many(Book book);
+    //std::vector<Book> Reader::Has_Many(Book book);
     void del();
 };
 
@@ -112,7 +112,7 @@ std::vector<Reader> Reader::findAll(int whereis)
     
     return rv;
 }
-
+/*
 std::vector<Inventory> Reader::Has_Many(Inventory inv)
 {
     inv.findAll();
@@ -134,7 +134,7 @@ std::vector<Inventory> Reader::Has_Many(Inventory inv)
     
     return result;
 }
-
+*/
 void ReaderMenu()
 {
     int ever = 1;

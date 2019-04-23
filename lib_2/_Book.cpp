@@ -1,24 +1,26 @@
-class Book 
+#include <string>
+#include <algorithm>
+//#include "base/BaseModel.cpp"
+
+class Book : public BaseModel
 {
-    const int STATUS_LIB = 0;
-    const int STATUS_READER = 1;
-    
-    std::string dataDir = "data/";
-    std::string filename = "book";
-    std::string ext = ".txt";
-    
-    std::string fn = dataDir + filename + ext;
 public:
+    std::string filename = "book";
+    
+    // fields
     int id;
     std::string name;
     std::string author;
-    int status = 0; //0 - lib, 1 - reader
+    int status; //0 - lib, 1 - reader
+    // end fields
     
-    Book(std::string n, std::string a): name(n), author(a) { }
-    Book(){}
+    enum statuses {LIBRARY, READER};
+    
+    Book(std::string n, std::string a, int status = LIBRARY) : BaseModel(filename) { }
+    Book() : BaseModel(filename) { }
 
     void insert();
-    bool save();  //  
+    void save();  //  
     std::vector<Book> find(std::string text, int field, int whereis = 0);
     std::vector<Book> findById(int f_id, int whereis = 0);
     std::vector<Book> findAll(int whereis = 0);
@@ -42,14 +44,14 @@ void Book::insert()
 }
 
 //1704
-bool Book::save()
+void Book::save()
 {
     //get id
     AI ai(filename);
     id = ai.get_id();
     
     //open file for std::ios::app
-    std::ofstream infile(fn,std::ios::app);
+    std::ofstream infile(getFilepath(),std::ios::app);
     
     //write data
     infile << id << " " << name << " " << author << " " << status << std::endl;
@@ -57,7 +59,7 @@ bool Book::save()
     //close file
     infile.close();
     
-    return true;
+    return;
 }
 
 std::vector<Book> Book::findById(int f_id, int status)
@@ -119,7 +121,7 @@ std::vector<Book> Book::find(std::string text, int field, int status)
 
 std::vector<Book> Book::findAll(int whereis)
 {
-    std::ifstream file(fn,std::ios::app);
+    std::ifstream file(getFilepath(),std::ios::app);
     std::vector<Book> rv;
     if (file.is_open())
     {

@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "AI.cpp"
-#include "_Reader.cpp"
+#include "base/BaseModel.cpp"
 #include "_Book.cpp"
+#include "_Reader.cpp"
 #include "_Inventory.cpp"
 
 int main()
@@ -29,7 +29,6 @@ int main()
                 break;
             case 2:
                 ReaderMenu();
-                break;
                 break;
             case 3:
                 InventoryMenu();
