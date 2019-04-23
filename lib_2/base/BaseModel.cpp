@@ -1,7 +1,9 @@
+#include <string>
+
 class BaseModel
 {
 public:
-    std::string dataDir = "../data/";
+    std::string dataDir = "data/";
     std::string filename;
     std::string ext = ".txt";
     
@@ -16,11 +18,6 @@ public:
         if(filename.length() == 0) throw -1;
         return dataDir + filename + ext;
     }
-    
-    void setFileName(std::string _filename)
-    {
-        filename = _filename;
-    }
 
     void setAutoincrement()
     {
@@ -29,24 +26,27 @@ public:
     }
     
     //BaseModel() = delete; // model must be initializes by filename
-    BaseModel(std::string _fn, bool _ithAI = true) : filename(_fn) 
+    BaseModel(std::string _fn, bool _withAI = true)
     {
+        filename = _fn;
+        withAI = _withAI;
         if(withAI) setAutoincrement();
     }
     
-    virtual void save();
-    virtual void update();
-    virtual void del();
+    void save();
+    void update();
+    void del(int id);
     
-    virtual std::vector<BaseModel> find();
-    virtual std::vector<BaseModel> findById();
-    virtual std::vector<BaseModel> findAll();
+    template<typename T>
+    T find(std::string text, int a, int b);
+    
+    template<typename T>
+    T findById(int a, int b);
+    
+    template<typename T>
+    T findAll(int a);
 
     //ToDo: find by field - make array from fields of struct, make enum list
     //find using emun field returning number of value we need in struct 
     //fields list 
-
-
-
-
 };

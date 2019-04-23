@@ -1,19 +1,25 @@
+
+template<typename T>
+void echo(T val)
+{
+    std::cout << val << std::endl;
+}
+
+
 class Book : public BaseModel
 {
 public:
-    std::string filename = "book";
-    
+    enum statuses {LIBRARY, READER};
     // fields
     int id;
     std::string name;
     std::string author;
-    int status; //0 - lib, 1 - reader
+    int status = LIBRARY; //0 - lib, 1 - reader
     // end fields
     
-    enum statuses {LIBRARY, READER};
     
-    Book(std::string n, std::string a, int status = LIBRARY) : BaseModel(filename) { }
-    Book() : BaseModel(filename) { }
+    Book(std::string n, std::string a, int status = LIBRARY) : BaseModel("book") { }
+    Book() : BaseModel("book") { }
 
     void insert();
     void save();
@@ -21,7 +27,7 @@ public:
     std::vector<Book> findById(int f_id, int whereis = LIBRARY);
     std::vector<Book> findAll(int whereis = LIBRARY);
     void update();
-    void del();
+    void del(int id);
 };
 
 void Book::insert()
@@ -34,8 +40,9 @@ void Book::insert()
     std::string t_author;
     std::cin >> t_author;
     
-    Book book(t_name, t_author);
-    book.save();
+    name = t_name;
+    author = t_author;
+    save();
 }
 
 void Book::save()
@@ -46,13 +53,17 @@ void Book::save()
     
     //open file for std::ios::app
     std::ofstream infile(getFilepath(),std::ios::app);
-    
-    //write data
-    infile << id << " " << name << " " << author << " " << status << std::endl;
-    
-    //close file
-    infile.close();
-    
+    if(infile.is_open()) {
+        //write data
+        infile << id << " " << name << " " << author << " " << status << std::endl;
+        
+        //close file
+        infile.close();
+    }
+    else
+    {
+        echo("file was not open");
+    }   
     return;
 }
 
@@ -133,6 +144,18 @@ std::vector<Book> Book::findAll(int whereis)
     return rv;
 }
 
+void Book::update()
+{
+    return;
+}
+
+void Book::del(int id)
+{
+    //here we will find row and delete it
+    //we need findById
+    return;
+}
+
 void BookMenu()
 {
     int ever = 1;
@@ -210,3 +233,4 @@ void BookMenu()
         }
     }
 }
+
