@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <iterator>
 #include <algorithm>
 #include "AI.cpp"
 #include "base/BaseModel.cpp"

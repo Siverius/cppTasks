@@ -26,7 +26,7 @@ public:
     std::vector<Book> find(std::string text, int field, int whereis = LIBRARY);
     std::vector<Book> findById(int f_id, int whereis = LIBRARY);
     std::vector<Book> findAll(int whereis = LIBRARY);
-    void update();
+    void update(int id);
     void del(int id);
     int anotherStatus();
 };
@@ -145,12 +145,12 @@ std::vector<Book> Book::findAll(int whereis)
     return rv;
 }
 
-int anotherStatus()
+int Book::anotherStatus()
 {
     return status == LIBRARY ? READER : LIBRARY;
 }
 
-void Book::update(int id, int status)
+void Book::update(int id)
 {
     //findAll
     //find iterator to our object (id)
@@ -158,24 +158,24 @@ void Book::update(int id, int status)
     //rewrita file
     
     std::vector<Book> all = findAll();
-    str::vector<Book>::iterator temp = std::find_if(all.begin(), all.end(), \
+    std::vector<Book>::iterator temp = std::find_if(all.begin(), all.end(), \
         [id](Book & book)->bool{
                 return book.id == id;
             }
     );
     if(temp != all.end())
     {    
-        str::vector<Book>::iterator to_upd = temp;
+        std::vector<Book>::iterator to_upd = temp;
         all.erase(temp);
         
         //rewrite file 
-        std::ofstream input(getFilename());
+        std::ofstream input(getFilepath());
         if(input.is_open())
         {
             std::copy(all.begin(), all.end(), std::ostream_iterator<std::string>(input, "\n"));
-            input << to_upd->id << to_upd->name << to_upd->author << to_upd->anotherStatus() << std::endl;        }
-        
-        
+            input << to_upd->id << to_upd->name << to_upd->author << to_upd->anotherStatus() << std::endl;       
+            input.close();  
+        }     
     }
     
     return;
@@ -184,7 +184,7 @@ void Book::update(int id, int status)
 void Book::del(int id)
 {
     std::vector<Book> all = findAll();
-    str::vector<Book>::iterator to_del = std::find_if(all.begin(), all.end(), \
+    std::vector<Book>::iterator to_del = std::find_if(all.begin(), all.end(), \
         [id](Book & book)->bool{
                 return book.id == id;
             }
@@ -195,10 +195,11 @@ void Book::del(int id)
     }
     
     //rewrite file 
-    std::ofstream input(getFilename());
+    std::ofstream input(getFilepath());
     if(input.is_open())
     {
         std::copy(all.begin(), all.end(), std::ostream_iterator<std::string>(input, "\n"));
+        input.close(); 
     }
     return;
 }
