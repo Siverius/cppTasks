@@ -1,30 +1,22 @@
 
-template<typename T>
-void echo(T val)
-{
-    std::cout << val << std::endl;
-}
-
-
 class Book : public BaseModel
 {
 public:
-    enum statuses {LIBRARY, READER};
+    enum statuses {LIBRARY, READER, ALL};
     // fields
     int id;
     std::string name;
     std::string author;
     int status = LIBRARY; //0 - lib, 1 - reader
     // end fields
-    
-    
+
     Book(std::string n, std::string a, int status = LIBRARY) : BaseModel("book") { }
     Book() : BaseModel("book") { }
 
     void insert();
     void save();
-    std::vector<Book> find(std::string text, int field, int whereis = LIBRARY);
-    std::vector<Book> findById(int f_id, int whereis = LIBRARY);
+    std::vector<Book> find(std::string text, int field);
+    std::vector<Book> findById(int f_id);
     std::vector<Book> findAll(int whereis = LIBRARY);
     void update(int id);
     void del(int id);
@@ -34,15 +26,11 @@ public:
 void Book::insert()
 {
     std::cout << "\t Insert name of book(string): ";
-    std::string t_name;
-    std::cin >> t_name;
+    std::cin >> name;
     
     std::cout << "\t Insert author (string): ";
-    std::string t_author;
-    std::cin >> t_author;
+    std::cin >> author;
     
-    name = t_name;
-    author = t_author;
     save();
 }
 
@@ -68,7 +56,8 @@ void Book::save()
     return;
 }
 
-std::vector<Book> Book::findById(int f_id, int status)
+//maybe it`s not good idea to return vector here, object seems better 
+std::vector<Book> Book::findById(int f_id)
 {
     std::vector<Book> allBooks = Book::findAll();
     std::vector<Book> foundedBooks;
@@ -77,7 +66,7 @@ std::vector<Book> Book::findById(int f_id, int status)
     {
         auto fnd = std::find_if(allBooks.begin(), allBooks.end(), [f_id](Book & book)->bool{
                 //return book.id.find(f_id)!=std::string::npos;
-                return (book.id == f_id && book.status == LIBRARY);
+                return (book.id == f_id); //will find all books
             });
         if(fnd != allBooks.end())
         {
@@ -88,7 +77,7 @@ std::vector<Book> Book::findById(int f_id, int status)
 }
 
 //1704
-std::vector<Book> Book::find(std::string text, int field, int status)
+std::vector<Book> Book::find(std::string text, int field)
 {
     std::vector<Book> allBooks = Book::findAll();
     std::vector<Book> foundedBooks;
@@ -116,11 +105,7 @@ std::vector<Book> Book::find(std::string text, int field, int status)
         }
     }
     
-    if(foundedBooks.size() == 0)
-    {
-        Book emptyBook;
-        foundedBooks.push_back(emptyBook);
-    }
+    if(foundedBooks.size() == 0) throw -1;
     
     return foundedBooks;
 }
@@ -135,7 +120,7 @@ std::vector<Book> Book::findAll(int whereis)
         {
             Book book;
             file >> book.id >> book.name >> book.author >> book.status;
-            if(book.status == whereis) {
+            if((whereis == ALL || book.status == whereis) && !file.eof()) {
                 rv.push_back(book);
             }
         }
@@ -151,13 +136,8 @@ int Book::anotherStatus()
 }
 
 void Book::update(int id)
-{
-    //findAll
-    //find iterator to our object (id)
-    //change status
-    //rewrita file
-    
-    std::vector<Book> all = findAll();
+{    
+    std::vector<Book> all = findAll(ALL);
     std::vector<Book>::iterator temp = std::find_if(all.begin(), all.end(), \
         [id](Book & book)->bool{
                 return book.id == id;
@@ -165,15 +145,29 @@ void Book::update(int id)
     );
     if(temp != all.end())
     {    
-        std::vector<Book>::iterator to_upd = temp;
-        all.erase(temp);
+        //std::vector<Book>::iterator to_upd = temp;
         
         //rewrite file 
         std::ofstream input(getFilepath());
         if(input.is_open())
         {
-            std::copy(all.begin(), all.end(), std::ostream_iterator<std::string>(input, "\n"));
-            input << to_upd->id << to_upd->name << to_upd->author << to_upd->anotherStatus() << std::endl;       
+            input << temp->id << " " \
+                  << temp->name << " " \
+                  << temp->author << " " \
+                  << temp->anotherStatus() << std::endl;
+            
+            all.erase(temp);
+
+            std::vector<Book>::iterator iter = all.begin();
+            while(iter != all.end())
+            {
+                input << iter->id << " " \
+                  << iter->name << " " \
+                  << iter->author << " " \
+                  << iter->status << std::endl;
+                iter++;
+            }
+
             input.close();  
         }     
     }
@@ -198,7 +192,15 @@ void Book::del(int id)
     std::ofstream input(getFilepath());
     if(input.is_open())
     {
-        std::copy(all.begin(), all.end(), std::ostream_iterator<std::string>(input, "\n"));
+        std::vector<Book>::iterator iter = all.begin();
+        while(iter != all.end())
+        {
+            input << iter->id << " " \
+                << iter->name << " " \
+                << iter->author << " " \
+                << iter->status << std::endl;
+                iter++;
+        }
         input.close(); 
     }
     return;
@@ -216,6 +218,9 @@ void BookMenu()
         std::cout << "2. Hello" << std::endl;
         std::cout << "3. Find book by name" << std::endl;
         std::cout << "4. Find book by author" << std::endl;
+        std::cout << "5. Show all books" << std::endl;
+        std::cout << "6. Update book (change status)" << std::endl;
+        std::cout << "7. Delete book" << std::endl;
         std::cout << "0. Exit " << std::endl;
         
         std::cin >> choice;
@@ -272,9 +277,27 @@ void BookMenu()
                     std::cout << it->id << " " << it->name << " " << it->author << std::endl;
                     ++it;
                 }
+                echo("==================================================");
             }
                 break;
-            
+            case 6:
+            {
+                Book b;
+                int b_id;
+                echo("Input id");
+                std::cin >> b_id;
+                b.update(b_id);
+            }
+                break;
+            case 7:
+            {
+                Book b;
+                int b_id;
+                echo("Input id");
+                std::cin >> b_id;
+                b.del(b_id);
+                break;
+            }
             case 0:
             default:
                 ever = 0;

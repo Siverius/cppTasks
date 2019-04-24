@@ -1,5 +1,11 @@
 #include <string>
 
+template<typename T>
+void echo(T val)
+{
+    std::cout << val << std::endl;
+}
+
 class BaseModel
 {
 public:
@@ -36,7 +42,7 @@ public:
     void save();
     void update();
     void del(int id);
-    
+        
     template<typename T>
     T find(std::string text, int a, int b);
     

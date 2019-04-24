@@ -6,6 +6,7 @@ int main()
     int choice;
     while(ever)
     {
+        system("cls");
         std::cout << "Select something: " << std::endl;
         std::cout << "1. Books " << std::endl;
         std::cout << "2. Readers " << std::endl;
@@ -17,12 +18,15 @@ int main()
         switch(choice)
         {
             case 1:
+                system("cls");
                 BookMenu();
                 break;
             case 2:
+                system("cls");
                 ReaderMenu();
                 break;
             case 3:
+                system("cls");
                 InventoryMenu();
                 break;
             default:

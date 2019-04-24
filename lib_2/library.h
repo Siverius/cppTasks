@@ -6,6 +6,6 @@
 #include <algorithm>
 #include "AI.cpp"
 #include "base/BaseModel.cpp"
-#include "_Book.cpp"
 #include "_Reader.cpp"
+#include "_Book.cpp"
 #include "_Inventory.cpp"

@@ -1,62 +1,57 @@
-class Reader 
+class Reader : public BaseModel
 {
-    std::string dataDir = "data/";
-    std::string filename = "reader";
-    std::string ext = ".txt";
-    
-    std::string fn = dataDir + filename + ext;
 public:
     int id;
     std::string name;
     int age;
     
-    Reader(std::string n, int a): name(n), age(a) { }
-    Reader(){}
+    Reader(std::string n, int a) : BaseModel("reader") { }
+    Reader() : BaseModel("reader") {}
 
     void insert();
     bool save();  
-    //template?  
-    std::vector<Reader> find(std::string text, int field, int whereis = 0);
-    std::vector<Reader> findById(int f_id, int whereis = 0);
-    std::vector<Reader> findAll(int whereis = 0);
-    void update();
-    //std::vector<Book> Reader::Has_Many(Book book);
-    void del();
+    std::vector<Reader> find(std::string text, int field);
+    std::vector<Reader> findById(int f_id);
+    std::vector<Reader> findAll();
+    void update(int id);
+    void del(int id);
 };
 
 void Reader::insert()
 {
     std::cout << "\t Insert name of reader(string): ";
-    std::string t_name;
-    std::cin >> t_name;
-    
+    std::cin >> name;
+
     std::cout << "\t Insert readers age (int): ";
-    int t_age;
-    std::cin >> t_age;
-    
-    Reader reader(t_name, t_age);
-    reader.save();
+    std::cin >> age;
+
+    save();
 }
 
 bool Reader::save()
 {
     //get id
-    AI ai(filename);
-    id = ai.get_id();
+    setAutoincrement();
+    id = autoincrement;
     
     //open file for std::ios::app
-    std::ofstream infile(fn,std::ios::app);
-    
-    //write data
-    infile << id << " " << name << " " << age << std::endl;
-    
-    //close file
-    infile.close();
-    
+    std::ofstream infile(getFilepath(),std::ios::app);
+    if(infile.is_open()) {    
+        //write data
+        infile << id << " " << name << " " << age << std::endl;
+        
+        //close file
+        infile.close();
+    }
+    else
+    {
+        echo("file was not open");
+    }
+     
     return true;
 }
 
-std::vector<Reader> Reader::findById(int f_id, int status)
+std::vector<Reader> Reader::findById(int f_id)
 {
     std::vector<Reader> allReaders = Reader::findAll();
     std::vector<Reader> foundedReaders;
@@ -75,7 +70,7 @@ std::vector<Reader> Reader::findById(int f_id, int status)
 }
 
 //ToDo: redo using template
-std::vector<Reader> Reader::find(std::string text, int field, int status)
+std::vector<Reader> Reader::find(std::string text, int field)
 {
     std::vector<Reader> allReaders = Reader::findAll();
     std::vector<Reader> foundedReaders;
@@ -95,9 +90,9 @@ std::vector<Reader> Reader::find(std::string text, int field, int status)
     return foundedReaders;
 }
 
-std::vector<Reader> Reader::findAll(int whereis)
+std::vector<Reader> Reader::findAll()
 {
-    std::ifstream file(fn,std::ios::app);
+    std::ifstream file(getFilepath(),std::ios::app);
     std::vector<Reader> rv;
     if (file.is_open())
     {
@@ -105,13 +100,86 @@ std::vector<Reader> Reader::findAll(int whereis)
         {
             Reader reader;
             file >> reader.id >> reader.name >> reader.age;
-            rv.push_back(reader);
+            if(!file.eof())
+            {
+                rv.push_back(reader);
+            }
         }
     }
     file.close(); 
     
     return rv;
 }
+
+//ToDo: make this usefull - change name and age, maybe by std::map
+void Reader::update(int id)
+{    
+    std::vector<Reader> all = findAll();
+    
+    //findById
+    std::vector<Reader>::iterator temp = std::find_if(all.begin(), all.end(), \
+        [id](Reader & reader)->bool{
+                return reader.id == id;
+            }
+    );
+    if(temp != all.end())
+    {
+        //rewrite file 
+        std::ofstream input(getFilepath());
+        if(input.is_open())
+        {
+            input << temp->id << " " \
+                  << temp->name << " " \
+                  << temp->age << std::endl;
+            
+            all.erase(temp);
+
+            std::vector<Reader>::iterator iter = all.begin();
+            while(iter != all.end())
+            {
+                input << iter->id << " " \
+                  << iter->name << " " \
+                  << iter->age << std::endl;
+                iter++;
+            }
+
+            input.close();  
+        }     
+    }
+    
+    return;
+}
+
+void Reader::del(int id)
+{
+    std::vector<Reader> all = findAll();
+    std::vector<Reader>::iterator to_del = std::find_if(all.begin(), all.end(), \
+        [id](Reader & reader)->bool{
+                return reader.id == id;
+            }
+    );
+    if(to_del != all.end())
+    {
+        all.erase(to_del);
+    }
+    
+    //rewrite file 
+    std::ofstream input(getFilepath());
+    if(input.is_open())
+    {
+        std::vector<Reader>::iterator iter = all.begin();
+        while(iter != all.end())
+        {
+            input << iter->id << " " \
+                << iter->name << " " \
+                << iter->age << std::endl;
+                iter++;
+        }
+        input.close(); 
+    }
+    return;
+}
+
 /*
 std::vector<Inventory> Reader::Has_Many(Inventory inv)
 {
@@ -147,6 +215,8 @@ void ReaderMenu()
         std::cout << "2. Hello" << std::endl;
         std::cout << "3. Find reader by name" << std::endl;
         std::cout << "4. Find books user having" << std::endl;
+        std::cout << "5. Show all Readers" << std::endl;
+        std::cout << "6. DeleteReader" << std::endl;
         std::cout << "0. Exit " << std::endl;
         
         std::cin >> choice;
@@ -202,6 +272,16 @@ void ReaderMenu()
                 }
             }
                 break;
+            
+            case 6:
+            {
+                Reader r;
+                int r_id;
+                echo("Input ID");
+                std::cin >> r_id;
+                r.del(r_id);
+            }
+            break;
             
             case 0:
             default:
