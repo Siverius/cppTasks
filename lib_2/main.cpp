@@ -10,23 +10,19 @@ int main()
         std::cout << "Select something: " << std::endl;
         std::cout << "1. Books " << std::endl;
         std::cout << "2. Readers " << std::endl;
-        std::cout << "3. Issue some books " << std::endl;
-        std::cout << "4. Pick up some book " << std::endl;
+        std::cout << "3. Inventory " << std::endl;
         std::cout << "0. Exit " << std::endl;
         
         std::cin >> choice;
         switch(choice)
         {
             case 1:
-                system("cls");
                 BookMenu();
                 break;
             case 2:
-                system("cls");
                 ReaderMenu();
                 break;
             case 3:
-                system("cls");
                 InventoryMenu();
                 break;
             default:
