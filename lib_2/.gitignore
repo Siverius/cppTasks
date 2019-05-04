@@ -1,3 +1,10 @@
 .vscode/
+.vs/
+Debug/
 *.o
 *.exe
+*.filters
+*.json
+*.sln
+*.user
+*.vcxproj

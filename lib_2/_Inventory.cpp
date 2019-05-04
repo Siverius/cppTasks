@@ -15,7 +15,7 @@ public:
     bool save();  
     //template?  Maybe map <field_name: value>?
     std::vector<Inventory> find(int id, int field);
-    std::vector<Inventory> findById(int id, int field);
+    std::vector<Inventory> findById(int id, int delivered = ACTIVE);
     std::vector<Inventory> findAll(int status = 0);
     void update(int id);
     void del(int id);
@@ -84,6 +84,25 @@ std::vector<Inventory> Inventory::find(int value, int field)
     if(foundedInventory.size() == 0) throw -1;
     
     return foundedInventory;
+}
+
+std::vector<Inventory> Inventory::findById(int id, int delivered)
+{
+    std::vector<Inventory> all = findAll();
+    std::vector<Inventory> out;
+    
+    if(!all.empty())
+    {
+        auto fnd = std::find_if(all.begin(), all.end(), [id](Inventory & inventory)->bool{
+                return (inventory.id == id); //will find all books
+            });
+        if(fnd != all.end())
+        {
+            out.push_back(*fnd);
+        }
+    }
+    return out;
+    
 }
 
 std::vector<Inventory> Inventory::findAll(int whereis)
@@ -355,7 +374,13 @@ void InventoryMenu()
                     Book book; //yes, it`s very stupid code, I know((
                     auto book_vector = book.findById(book_id);
                     auto book_object = book_vector.begin();
+<<<<<<< HEAD
                     std::cout << book_object->id << " " << book_object->name << " " << book_object->author << std::endl;
+=======
+                    std::cout << book_object->id << " " << \
+                                 book_object->name << " " << \
+                                 book_object->author << std::endl;
+>>>>>>> 61640086a712ed687c362944d91eba1a49babb2c
                     
                     bp_iter++;
                 }
@@ -365,15 +390,14 @@ void InventoryMenu()
                 std::cin >> inv_id;
                 
                 //find row
-                
-                
-                
-                //del(inv_id);
-                //delete row in inventory
-                
-                
-                //book.anotherStatus()
-
+                Inventory inv_temp;
+                std::vector<Inventory> row = inv_temp.findById(inv_id);
+                Book book_temp;
+                std::vector<Book> book = book_temp.findById((row.begin())->book_id);
+                Book book_model = *(book.begin());
+                book_model.anotherStatus();
+                book_model.save();
+                inv_temp.del(inv_id);
             }
                 break;
             case 3:
@@ -415,7 +439,13 @@ void InventoryMenu()
                     Book book; //yes, it`s very stupid code, I know((
                     auto book_vector = book.findById(book_id);
                     auto book_object = book_vector.begin();
+<<<<<<< HEAD
                     std::cout << book_object->id << " " << book_object->name << " " << book_object->author << std::endl;
+=======
+                    std::cout << book_object->id << " " << \
+                                 book_object->name << " " << \
+                                 book_object->author << std::endl;
+>>>>>>> 61640086a712ed687c362944d91eba1a49babb2c
                     
                     bp_iter++;
                 }

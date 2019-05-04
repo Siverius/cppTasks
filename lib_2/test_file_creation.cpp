@@ -19,15 +19,15 @@ int createFile()
 int main()
 {
     int ever = 1;
-    int choise;
+    int choice;
     while(ever) {
         std::cout << "insert your choice ";
-        std::cin >> choise;
-        if (choise)
+        std::cin >> choice;
+        if (choice)
         {
             createFile();
         }
-        return 0;
         ever = 0;
     }
+    return 0;
 }
