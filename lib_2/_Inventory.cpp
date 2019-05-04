@@ -355,7 +355,7 @@ void InventoryMenu()
                     Book book; //yes, it`s very stupid code, I know((
                     auto book_vector = book.findById(book_id);
                     auto book_object = book_vector.begin();
-                    std::cout << book_object.id << " " << book_object.name << " " << book_object.author << std::endl;
+                    std::cout << book_object->id << " " << book_object->name << " " << book_object->author << std::endl;
                     
                     bp_iter++;
                 }
@@ -415,7 +415,7 @@ void InventoryMenu()
                     Book book; //yes, it`s very stupid code, I know((
                     auto book_vector = book.findById(book_id);
                     auto book_object = book_vector.begin();
-                    std::cout << book_object.id << " " << book_object.name << " " << book_object.author << std::endl;
+                    std::cout << book_object->id << " " << book_object->name << " " << book_object->author << std::endl;
                     
                     bp_iter++;
                 }
