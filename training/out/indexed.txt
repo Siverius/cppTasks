@@ -1,0 +1,177 @@
+1982444
+filename
+eng_test.txt
+Sent#1, offset = 36
+Sent#3, offset = 36
+filename
+ru_test.txt
+Sent#1, offset = 47
+
+2018
+filename
+eng_test.txt
+Sent#1, offset = 27
+Sent#3, offset = 27
+filename
+ru_test.txt
+Sent#1, offset = 26
+
+Belarus
+filename
+eng_test.txt
+Sent#0, offset = 42
+Sent#2, offset = 41
+
+January
+filename
+eng_test.txt
+Sent#1, offset = 19
+Sent#3, offset = 19
+
+Minsk
+filename
+eng_test.txt
+Sent#0, offset = 0
+Sent#2, offset = 0
+
+The
+filename
+eng_test.txt
+Sent#1, offset = 1
+Sent#3, offset = 1
+
+and
+filename
+eng_test.txt
+Sent#0, offset = 21
+Sent#2, offset = 21
+
+capital
+filename
+eng_test.txt
+Sent#0, offset = 13
+Sent#2, offset = 13
+
+city
+filename
+eng_test.txt
+Sent#0, offset = 33
+Sent#2, offset = 33
+
+in
+filename
+eng_test.txt
+Sent#1, offset = 16
+Sent#3, offset = 16
+
+is
+filename
+eng_test.txt
+Sent#0, offset = 6
+Sent#2, offset = 6
+
+largest
+filename
+eng_test.txt
+Sent#0, offset = 25
+Sent#2, offset = 25
+
+of
+filename
+eng_test.txt
+Sent#0, offset = 38
+Sent#2, offset = 38
+
+population
+filename
+eng_test.txt
+Sent#1, offset = 5
+Sent#3, offset = 5
+
+the
+filename
+eng_test.txt
+Sent#0, offset = 9
+Sent#2, offset = 9
+
+was
+filename
+eng_test.txt
+Sent#1, offset = 32
+Sent#3, offset = 32
+
+Беларусь
+filename
+ru_test.txt
+Sent#0, offset = 59
+
+Его
+filename
+ru_test.txt
+Sent#1, offset = 1
+
+Минск
+filename
+ru_test.txt
+Sent#0, offset = 0
+
+Республики
+filename
+ru_test.txt
+Sent#0, offset = 48
+
+большим
+filename
+ru_test.txt
+Sent#0, offset = 32
+
+года
+filename
+ru_test.txt
+Sent#1, offset = 31
+
+городом
+filename
+ru_test.txt
+Sent#0, offset = 40
+
+и
+filename
+ru_test.txt
+Sent#0, offset = 24
+
+на
+filename
+ru_test.txt
+Sent#1, offset = 16
+
+население
+filename
+ru_test.txt
+Sent#1, offset = 6
+
+самым
+filename
+ru_test.txt
+Sent#0, offset = 26
+
+составляет
+filename
+ru_test.txt
+Sent#1, offset = 36
+
+столицей
+filename
+ru_test.txt
+Sent#0, offset = 15
+
+является
+filename
+ru_test.txt
+Sent#0, offset = 6
+
+январь
+filename
+ru_test.txt
+Sent#1, offset = 19
+
